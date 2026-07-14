@@ -1,0 +1,40 @@
+# Dependencies
+node_modules/
+.next/
+out/
+build/
+dist/
+
+# Virtual Environments
+.venv/
+venv/
+ENV/
+env/
+*.pyc
+__pycache__/
+
+# Environment Variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.env
+
+# IDE / Editor config
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Dynamic Data Files
+data/processed/run_*_details.json
+data/processed/runs.json
+data/processed/analysis_results.json
+data/processed/preprocessing_stats.json
+data/processed/processed_reviews.json
+data/raw/*.json
+data/exports/*

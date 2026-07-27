@@ -200,6 +200,11 @@ def preprocess_reviews(reviews_list: list[dict]) -> tuple[list[dict], dict]:
     with open(reviews_save_path, "w", encoding="utf-8") as f:
         json.dump(processed_reviews, f, indent=2, ensure_ascii=False)
     logger.info(f"Saved processed reviews to {reviews_save_path}")
+    
+    from backend.database import is_db_configured, db_save_latest_data
+    if is_db_configured():
+        db_save_latest_data("processed_reviews", processed_reviews)
+        logger.info("Saved processed reviews to database")
         
     with open(stats_save_path, "w", encoding="utf-8") as f:
         json.dump(stats, f, indent=2, ensure_ascii=False)

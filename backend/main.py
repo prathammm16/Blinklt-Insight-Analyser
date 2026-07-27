@@ -39,7 +39,25 @@ def get_processed_dir() -> str:
     os.makedirs(processed_dir, exist_ok=True)
     return processed_dir
 
+from backend.database import (
+    is_db_configured,
+    init_db,
+    db_load_runs_history,
+    db_save_run_entry,
+    db_save_run_details,
+    db_load_run_details,
+    db_load_latest_data
+)
+
+# Initialize database schema if configured
+try:
+    init_db()
+except Exception as dbe:
+    logger.error(f"Database initialization error during start: {dbe}")
+
 def load_runs_history() -> list:
+    if is_db_configured():
+        return db_load_runs_history()
     history_file = os.path.join(get_processed_dir(), "runs.json")
     if not os.path.exists(history_file):
         return []
@@ -50,6 +68,9 @@ def load_runs_history() -> list:
         return []
 
 def save_run_entry(run_entry: dict):
+    if is_db_configured():
+        db_save_run_entry(run_entry)
+        return
     history_file = os.path.join(get_processed_dir(), "runs.json")
     history = load_runs_history()
     history.insert(0, run_entry)  # Insert newest first
@@ -57,11 +78,19 @@ def save_run_entry(run_entry: dict):
         json.dump(history, f, indent=2)
 
 def save_run_details(run_id: str, details: dict):
+    if is_db_configured():
+        db_save_run_details(run_id, details)
+        return
     file_path = os.path.join(get_processed_dir(), f"run_{run_id}_details.json")
     with open(file_path, "w", encoding="utf-8") as f:
         json.dump(details, f, indent=2, ensure_ascii=False)
 
 def load_run_details(run_id: str) -> dict:
+    if is_db_configured():
+        details = db_load_run_details(run_id)
+        if not details:
+            raise HTTPException(status_code=404, detail=f"Run details for ID '{run_id}' not found.")
+        return details
     file_path = os.path.join(get_processed_dir(), f"run_{run_id}_details.json")
     if not os.path.exists(file_path):
         raise HTTPException(status_code=404, detail=f"Run details for ID '{run_id}' not found.")
@@ -93,6 +122,10 @@ def get_latest_analysis():
     """
     Returns the latest processed analysis results JSON.
     """
+    if is_db_configured():
+        latest = db_load_latest_data("analysis_results")
+        if latest:
+            return latest
     processed_dir = get_processed_dir()
     analysis_file = os.path.join(processed_dir, "analysis_results.json")
     if os.path.exists(analysis_file):
@@ -112,6 +145,10 @@ def get_processed_reviews():
     """
     Returns the list of processed & cleaned reviews.
     """
+    if is_db_configured():
+        reviews = db_load_latest_data("processed_reviews")
+        if reviews is not None:
+            return reviews
     processed_dir = get_processed_dir()
     reviews_file = os.path.join(processed_dir, "processed_reviews.json")
     if os.path.exists(reviews_file):

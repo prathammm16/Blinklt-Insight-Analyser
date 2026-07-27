@@ -265,11 +265,25 @@ Return your response strictly as a single JSON object.
         with open(save_path, "w", encoding="utf-8") as f:
             json.dump(validated_analysis, f, indent=2, ensure_ascii=False)
             
+        from backend.database import is_db_configured, db_save_latest_data, db_load_latest_data
+        if is_db_configured():
+            db_save_latest_data("analysis_results", validated_analysis)
+            logger.info("Successfully saved analysis results to database")
+            
         logger.info(f"Successfully saved validated analysis results to {save_path}")
         return validated_analysis
         
     except Exception as e:
         logger.error(f"Error during Gemini review analysis: {str(e)}")
+        from backend.database import is_db_configured, db_load_latest_data
+        if is_db_configured():
+            try:
+                latest = db_load_latest_data("analysis_results")
+                if latest:
+                    logger.info("Fallback to database-stored analysis results due to Gemini error")
+                    return latest
+            except Exception as dbe:
+                logger.error(f"Failed to load database fallback: {str(dbe)}")
         try:
             backend_dir = os.path.dirname(os.path.abspath(__file__))
             project_root = os.path.dirname(backend_dir)
@@ -281,3 +295,4 @@ Return your response strictly as a single JSON object.
         except Exception as fe:
             logger.error(f"Failed to load fallback analysis results: {str(fe)}")
         raise RuntimeError(f"Review analysis synthesis failed: {str(e)}")
+

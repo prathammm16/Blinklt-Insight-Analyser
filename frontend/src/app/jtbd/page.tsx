@@ -1,33 +1,17 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState } from "react";
 import Sidebar from "@/components/layout/Sidebar";
 import TopBar from "@/components/layout/TopBar";
 import UploadModal from "@/components/shared/UploadModal";
 import JTBDCard from "@/components/jtbd/JTBDCard";
 import BehaviourCard from "@/components/jtbd/BehaviourCard";
-import { getHistory } from "@/lib/api";
-import { SEED_ANALYSIS } from "@/lib/seedData";
-import type { AnalysisResult, RunHistoryEntry } from "@/types";
+import { useAnalysis } from "@/context/AnalysisContext";
 import { Zap, ArrowRight, Sparkles } from "lucide-react";
 
 export default function JTBDPage() {
+  const { result, updateAnalysisResult } = useAnalysis();
   const [showUpload, setShowUpload] = useState(false);
-  const [result, setResult] = useState<AnalysisResult>(SEED_ANALYSIS);
-  const [history, setHistory] = useState<RunHistoryEntry[]>([]);
-
-  const loadHistory = useCallback(async () => {
-    try {
-      const h = await getHistory();
-      setHistory(h);
-    } catch {
-      // silent
-    }
-  }, []);
-
-  useEffect(() => {
-    loadHistory();
-  }, [loadHistory]);
 
   const jtbds = result.jtbd ?? [];
   const behaviors = result.behaviors ?? [];
@@ -262,8 +246,8 @@ export default function JTBDPage() {
         <UploadModal
           onClose={() => setShowUpload(false)}
           onSuccess={(r) => {
-            setResult(r);
-            loadHistory();
+            updateAnalysisResult(r);
+            setShowUpload(false);
           }}
         />
       )}

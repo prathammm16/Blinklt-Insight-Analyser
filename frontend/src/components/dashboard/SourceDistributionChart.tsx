@@ -84,9 +84,9 @@ export default function SourceDistributionChart({ result }: SourceDistributionCh
               ))}
             </Pie>
             <Tooltip
-              formatter={(value: number, name: string) => [
-                `${value.toLocaleString()} reviews`,
-                name,
+              formatter={(value?: any, name?: any) => [
+                `${Number(value || 0).toLocaleString()} reviews`,
+                String(name || ""),
               ]}
               contentStyle={{
                 background: "white",

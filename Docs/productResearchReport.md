@@ -1,5 +1,5 @@
 # 🛒 Blinkit Insight AI — Product Research Report
-> **Generated on:** 2026-07-14 23:21:58  
+> **Generated on:** 2026-07-27 16:20:31  
 > **Target System:** Growth discovery & cross-category exploration intelligence  
 > **Report Status:** Final / Validated  
 
@@ -13,90 +13,101 @@ The primary barrier preventing cross-category exploration is **habit loyalty** (
 ## 2. Dataset Summary
 The ingestion pipeline processed customer reviews from multiple sources:
 - **Total Reviews Ingested:** 100
-- **Duplicates Removed:** 23
-- **Spam/Noise Filtered:** 32
-- **Non-English/Unsupported Langs:** 6
-- **Final Clean Reviews Analyzed:** 39
+- **Duplicates Removed:** 1
+- **Spam/Noise Filtered:** 7
+- **Non-English/Unsupported Langs:** 12
+- **Final Clean Reviews Analyzed:** 80
 
 ### Ingestion Source Distribution
 | Platform Source | Review Count | Distribution Percentage |
 |---|---|---|
-| Google Play Store | 100 | 100.0% |
-| Apple App Store | 0 | 0.0% |
+| Google Play Store | 0 | 0.0% |
+| Apple App Store | 100 | 100.0% |
 | CSV Manual Upload | 0 | 0.0% |
 
 ## 3. Sentiment Distribution
-Global customer sentiments parsed across the cleaned reviews dataset. The overall **Global NPS Score is 0.0**.
+Global customer sentiments parsed across the cleaned reviews dataset. The overall **Global NPS Score is -12.5**.
 
 | Sentiment | Count | Percentage |
 |---|---|---|
-| Positive ✅ | 0 | 0.0% |
-| Neutral ➖ | 39 | 100.0% |
-| Negative ❌ | 0 | 0.0% |
+| Positive ✅ | 33 | 41.2% |
+| Neutral ➖ | 4 | 5.0% |
+| Negative ❌ | 43 | 53.8% |
 
 ## 4. Theme Analysis
 The AI dynamically clustered reviews into the following key discussion themes:
 
-### Theme 1: Customer Service & Resolution Failure
-- **Description:** Customers frequently report issues with unhelpful or unavailable customer support, leading to unresolved problems like wrong products, damaged goods, or failed refunds.
-- **Theme Size:** 8 supporting reviews
+### Theme 1: Delivery Speed and Convenience
+- **Description:** Customers frequently praise Blinkit for its ultra-fast delivery and the convenience it offers, especially for urgent or late-night needs, but also note when delivery times are not met.
+- **Theme Size:** 16 supporting reviews
 
-### Theme 2: Pricing & Value Concerns
-- **Description:** Customers frequently express dissatisfaction with high delivery charges, overall product prices being higher than market rates, and unexpected costs or lack of coupons.
-- **Theme Size:** 9 supporting reviews
-
-### Theme 3: Delivery Speed & Reliability
-- **Description:** Customers highly value fast and quick delivery, but concerns arise regarding the accuracy of deliveries to the correct address.
+### Theme 2: Product Quality and Order Accuracy
+- **Description:** Customers frequently report issues with the freshness, quality, and condition of products received, along with recurring problems of missing items in their orders.
 - **Theme Size:** 11 supporting reviews
 
-### Theme 4: Product Quality & Availability
-- **Description:** Customers expect a wide range of products to be available and in stock, but often encounter limited selection, out-of-stock items, or issues with receiving expired or incorrect products.
-- **Theme Size:** 9 supporting reviews
+### Theme 3: Customer Support and Issue Resolution
+- **Description:** A significant number of negative reviews highlight deficiencies in customer support, including unhelpful agents, difficulty obtaining refunds/replacements, and limited effective communication channels.
+- **Theme Size:** 10 supporting reviews
 
-### Theme 5: Ancillary Services Appreciation
-- **Description:** Customers express gratitude and appreciation for additional services provided by Blinkit, specifically the ambulance service.
-- **Theme Size:** 3 supporting reviews
+### Theme 4: Pricing and Fee Transparency
+- **Description:** Customers frequently express dissatisfaction with high product prices, excessive delivery fees, and the lack of transparency regarding additional or hidden charges during the checkout process.
+- **Theme Size:** 10 supporting reviews
 
-### Theme 6: App Performance & User Experience
-- **Description:** Customers report issues with the app's functionality, including frequent glitches and intrusive advertisements, impacting their overall experience.
-- **Theme Size:** 1 supporting reviews
+### Theme 5: Company's Political/Social Stance
+- **Description:** A significant cluster of negative reviews criticizes Blinkit's decision to stop services at a protest site, leading to accusations of political bias and threats of customer boycott.
+- **Theme Size:** 10 supporting reviews
+
+### Theme 6: Delivery Partner Professionalism
+- **Description:** While some delivery partners are praised for politeness, many reviews highlight negative experiences, including rudeness, incorrect deliveries, and unwillingness to follow proper delivery protocols.
+- **Theme Size:** 6 supporting reviews
+
+### Theme 7: App Functionality and User Experience
+- **Description:** Reviews sometimes mention technical glitches with payment options, difficulties with specific payment methods, and general frustration with intrusive app features like review prompts.
+- **Theme Size:** 5 supporting reviews
+
+### Theme 8: General Positive Sentiment
+- **Description:** Many customers express overall satisfaction with Blinkit's service, highlighting its general helpfulness, reliability, and convenience.
+- **Theme Size:** 12 supporting reviews
 
 ## 5. Shopping Behaviours
 The following shopping behavioral cohorts were identified from review sentiments:
 
-### Cohort: Demand for Instant Delivery
-- **Traits:** Customers prioritize speed and quick fulfillment for their orders, often relying on Blinkit for urgent needs and appreciating its fast delivery.
-- **Supporting Evidence:** 12 reviews
-
-### Cohort: Price Sensitivity
-- **Traits:** Customers are highly conscious of pricing, often comparing Blinkit's costs to market rates and expressing dissatisfaction with high delivery charges or lack of discounts.
-- **Supporting Evidence:** 8 reviews
-
-### Cohort: Expectation of Wide Product Range
-- **Traits:** Customers expect a comprehensive catalog, hoping to find 'everything available' on the app, and are frustrated when specific items are out of stock or the selection is limited.
+### Cohort: Urgent/Last-Minute Shopping
+- **Traits:** Customers frequently use Blinkit for immediate needs, often late at night or for last-minute purchases, due to its promise of ultra-fast delivery.
 - **Supporting Evidence:** 4 reviews
 
-### Cohort: Reliance on Convenience for Daily Needs
-- **Traits:** Customers rely on Blinkit for convenient home delivery of daily essentials, especially when they lack time or mobility to shop in person.
+### Cohort: Cross-Category / Comprehensive Shopping
+- **Traits:** Users leverage Blinkit not just for groceries but for a wide array of daily essentials, electronics, and other household items, indicating a reliance on its expanded catalog for diverse needs.
+- **Supporting Evidence:** 2 reviews
+
+### Cohort: Price-Sensitive & Competitor-Aware
+- **Traits:** Customers actively compare Blinkit's prices and overall service with competitors like Zepto and BigBasket, and higher prices or charges can lead to dissatisfaction or switching.
+- **Supporting Evidence:** 4 reviews
+
+### Cohort: Expectation of Flawless Fulfillment
+- **Traits:** Users expect their orders to be delivered completely and accurately, with all items present and in good condition, and are frustrated by the need to chase customer service for missing or incorrect products.
+- **Supporting Evidence:** 3 reviews
+
+### Cohort: Principle-Driven Disloyalty/Boycott
+- **Traits:** Some customers express a willingness to uninstall the app or boycott the service based on perceived political or social stances taken by the company.
 - **Supporting Evidence:** 2 reviews
 
 ## 6. Jobs-To-Be-Done (JTBD)
 Standardized user motivation models parsed by the Discovery Engine:
-1. **When I need items quickly, I want them delivered fast and reliably to my doorstep, so I don't have to spend time or effort going out.**
-2. **When I order products, I want to receive exactly what I paid for, in good condition and at a fair price, so I don't waste my money or time.**
-3. **When I encounter a problem with my order or service, I want responsive and fair customer support, so my issue is resolved satisfactorily without undue effort.**
-4. **When I need a variety of products, I want a wide selection available and in stock, so I can find everything I need in one place.**
-5. **When facing an emergency, I want access to critical ancillary services, so I feel supported by the platform beyond just commerce.**
+1. **When I need items quickly, I want them delivered almost instantly, so I can save time and address urgent needs without leaving home.**
+2. **When I'm running low on daily essentials or looking for diverse products, I want a single app with a wide variety and reliable delivery, so I can fulfill all my household and personal needs conveniently.**
+3. **When I encounter a problem with my order or the service, I want efficient and fair customer support, so my issue can be resolved quickly, and I feel valued as a customer.**
 
 ## 7. Root Causes
 The core barriers blocking customers from exploring other domains (such as personal care or kitchen utilities) include:
-1. **Issue:** Ineffective Customer Support & Resolution | **Root Cause:** Inadequate support protocols, lack of staff empowerment for resolutions, reduction in support channels (e.g., live chat), and slow replacement processes.
-2. **Issue:** High & Non-Transparent Pricing / Charges | **Root Cause:** Pricing strategy (higher than market), excessive delivery fees, and unexpected or unexplained adjustments to order costs.
-3. **Issue:** Product Quality, Accuracy & Substitution Issues | **Root Cause:** Poor quality control, errors in order fulfillment, unwanted automatic substitutions for out-of-stock items, and discrepancies between ordered and received products.
-4. **Issue:** Restrictive Return & Refund Policy | **Root Cause:** Company policies that prevent direct product returns, offer only promo codes instead of refunds, and lack clear resolution pathways for wrong deliveries.
-5. **Issue:** Limited Stock & Product Availability | **Root Cause:** Inefficient inventory management, limited warehouse capacity, or a narrow catalog, leading to popular items being frequently out of stock.
-6. **Issue:** App Performance Issues | **Root Cause:** Technical debt, insufficient quality assurance, or an aggressive monetization strategy leading to a glitchy user experience and excessive ads.
-7. **Issue:** Inaccurate Address Deliveries | **Root Cause:** Logistics failures, incorrect mapping, or human error by delivery personnel resulting in items not reaching the intended recipient.
+1. **Issue:** Payment Processing & Technical Glitches | **Root Cause:** Inadequate app development, payment gateway integration issues, or poor quality assurance (QA).
+2. **Issue:** Missing, Damaged, or Low-Quality Products | **Root Cause:** Poor quality control, inadequate packaging, improper handling during picking/delivery, or supply chain issues with fresh produce.
+3. **Issue:** Unresponsive & Ineffective Customer Support | **Root Cause:** Insufficient support staff, inadequate training, rigid return/refund policies, limited contact channels, or inefficient resolution processes.
+4. **Issue:** Opaque and High Pricing/Charges | **Root Cause:** High operational costs passed to customers, unclear pricing models, lack of transparency in app UI regarding final bill.
+5. **Issue:** Poor Delivery Partner Conduct & Accuracy | **Root Cause:** Insufficient training for delivery personnel, lack of clear protocols for delivery, poor supervision, or inadequate communication tools.
+6. **Issue:** Perceived Political Bias/Censorship | **Root Cause:** Company decision regarding service availability during sensitive social events, leading to public backlash.
+7. **Issue:** Intrusive App UX (e.g., Review Prompts) | **Root Cause:** Aggressive user engagement strategies or poorly designed app prompts.
+8. **Issue:** Environmental Concerns (Plastic Usage) | **Root Cause:** Company packaging policy not aligned with environmental best practices or customer expectations.
 
 ## 8. Opportunity Matrix
 Prioritized growth initiatives mapped to solve discovered friction points:
@@ -116,12 +127,12 @@ Based on the Priority scores, we recommend initiating the following MVP growth f
 
 ## 10. Supporting Customer Quotes (Verbatim)
 Verbatim quotes extracted from customer reviews and verified by the post-processing filter:
-- *"after keeping me on hold for 14 mins, this is what chat support said- i have no clue what they ment "prem we understand your dissatisfaction with our services and we hope to resolve your issue. however, currently i am not allowed to process the resolution.""* — (ID: `6d3bd718-bec8-4182-a315-492af180697d`, Platform: `ANDROID`, Source: `PLAY_STORE`)
-- *"they don't take the return of products which is really worst"* — (ID: `d9f21d4e-4b2a-4f75-8edc-456b7ba1df94`, Platform: `ANDROID`, Source: `PLAY_STORE`)
-- *"delivery charges will be to much"* — (ID: `5869a206-eaf1-487f-a259-1a75976369f5`, Platform: `ANDROID`, Source: `PLAY_STORE`)
-- *"my 500 rs gone extra"* — (ID: `a8d5e126-f0d0-4e44-bd3f-09d5a7ec7c12`, Platform: `ANDROID`, Source: `PLAY_STORE`)
-- *"quick service."* — (ID: `2d530346-c935-47d2-b346-cfa157ff4568`, Platform: `ANDROID`, Source: `PLAY_STORE`)
-- *"fast delivery thankyou"* — (ID: `d1f58b89-d341-40ab-9ce3-743269a9754b`, Platform: `ANDROID`, Source: `PLAY_STORE`)
+- *"late night help"* — (ID: `14347794545`, Platform: `IOS`, Source: `APP_STORE`)
+- *"helpful in need"* — (ID: `14347356816`, Platform: `IOS`, Source: `APP_STORE`)
+- *"good quality"* — (ID: `14347176488`, Platform: `IOS`, Source: `APP_STORE`)
+- *"make sure that the vegetables are fresh and the bread is soft"* — (ID: `14346520163`, Platform: `IOS`, Source: `APP_STORE`)
+- *"fix your app instead of asking customers to send emails, no one is free enough to send you emails on bugs in your app, its your development and testing team’s job"* — (ID: `14347542169`, Platform: `IOS`, Source: `APP_STORE`)
+- *"no customer care number to reach out for any assistance and there is very limited option in chat which you select and the conversation gets closed on its own without resolution"* — (ID: `14347077312`, Platform: `IOS`, Source: `APP_STORE`)
 
 ## 11. Appendix
 - **Language filter threshold:** lang='en'

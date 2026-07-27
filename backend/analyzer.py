@@ -23,9 +23,21 @@ if API_KEY:
 else:
     logger.warning("GEMINI_API_KEY not found in environment or .env file.")
 
+def get_generative_model():
+    """
+    Returns an instantiated GenerativeModel trying candidates in order.
+    """
+    candidates = ["gemini-2.5-flash", "gemini-1.5-flash", "gemini-2.0-flash"]
+    for cand in candidates:
+        try:
+            return genai.GenerativeModel(cand)
+        except Exception:
+            continue
+    return genai.GenerativeModel("gemini-1.5-flash")
+
 def classify_sentiments(reviews: list[dict], batch_size: int = 50) -> list[dict]:
     """
-    Classifies sentiments for all reviews in batches of batch_size using gemini-2.5-flash.
+    Classifies sentiments for all reviews in batches of batch_size using gemini-2.5-flash or fallback.
     Adds a 'sentiment' key ('positive', 'neutral', 'negative') to each review dictionary.
     """
     if not API_KEY:
@@ -36,7 +48,7 @@ def classify_sentiments(reviews: list[dict], batch_size: int = 50) -> list[dict]
         return reviews
         
     logger.info(f"Classifying sentiments for {len(reviews)} reviews in batches of {batch_size}.")
-    model = genai.GenerativeModel("gemini-2.5-flash")
+    model = get_generative_model()
     
     classified_reviews = []
     
@@ -229,7 +241,7 @@ Do NOT edit, paraphrase, or hallucinate quotes. Do not include phantom review ID
 
 Return your response strictly as a single JSON object.
 """
-    model = genai.GenerativeModel("gemini-2.5-flash")
+    model = get_generative_model()
     
     try:
         response = model.generate_content(

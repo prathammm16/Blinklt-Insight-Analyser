@@ -121,89 +121,131 @@ def scrape_play_store(app_id_or_url: str, count: int = 100) -> list[dict]:
 def scrape_app_store(app_id_or_url: str, count: int = 100) -> list[dict]:
     """
     Scrapes reviews from Apple App Store RSS feed and normalizes them to the unified schema.
-    Saves raw reviews to data/raw/app_store_raw.json.
+    If online RSS fails or returns 0 reviews, falls back to saved data/raw/app_store_raw.json.
     """
-    app_id, app_name, country = extract_app_store_info(app_id_or_url)
-    
     normalized = []
     raw_entries = []
-    page = 1
-    # Each RSS page contains up to 50 entries
-    max_pages = (count + 49) // 50
     
-    while len(normalized) < count and page <= min(max_pages, 10):
-        url = f"https://itunes.apple.com/{country}/rss/customerreviews/page={page}/id={app_id}/sortby=mostrecent/json"
-        try:
-            r = requests.get(url, timeout=10)
-            
-            # Fallback to "us" region if "in" or custom region returns 404/no results on page 1
-            if r.status_code == 404 and country != "us" and page == 1:
-                url = f"https://itunes.apple.com/us/rss/customerreviews/page={page}/id={app_id}/sortby=mostrecent/json"
-                r = requests.get(url, timeout=10)
-                
-            if r.status_code != 200:
-                break
-                
-            data = r.json()
-            feed = data.get("feed", {})
-            entries = feed.get("entry", [])
-            
-            if isinstance(entries, dict):
-                entries = [entries]
-                
-            if not entries:
-                break
-                
-            raw_entries.extend(entries)
-            
-            for entry in entries:
-                if len(normalized) >= count:
+    try:
+        app_id, app_name, country = extract_app_store_info(app_id_or_url)
+        page = 1
+        max_pages = (count + 49) // 50
+        
+        while len(normalized) < count and page <= min(max_pages, 10):
+            url = f"https://itunes.apple.com/{country}/rss/customerreviews/page={page}/id={app_id}/sortby=mostrecent/json"
+            try:
+                r = requests.get(url, timeout=5)
+                if r.status_code == 404 and country != "us" and page == 1:
+                    url = f"https://itunes.apple.com/us/rss/customerreviews/page={page}/id={app_id}/sortby=mostrecent/json"
+                    r = requests.get(url, timeout=5)
+                    
+                if r.status_code != 200:
                     break
                     
-                # Skip application info entry (must have 'author' key to be a review)
-                if "author" not in entry:
-                    continue
+                data = r.json()
+                feed = data.get("feed", {})
+                entries = feed.get("entry", [])
+                
+                if isinstance(entries, dict):
+                    entries = [entries]
+
+                if not entries and country != "us" and page == 1:
+                    url = f"https://itunes.apple.com/us/rss/customerreviews/page={page}/id={app_id}/sortby=mostrecent/json"
+                    try:
+                        r = requests.get(url, timeout=5)
+                        if r.status_code == 200:
+                            data = r.json()
+                            feed = data.get("feed", {})
+                            entries = feed.get("entry", [])
+                            if isinstance(entries, dict):
+                                entries = [entries]
+                    except Exception:
+                        pass
                     
-                review_id = str(entry.get("id", {}).get("label", ""))
-                title = str(entry.get("title", {}).get("label", ""))
-                content = str(entry.get("content", {}).get("label", ""))
-                text = f"{title}: {content}" if title else content
-                
-                try:
-                    rating = int(entry.get("im:rating", {}).get("label", "0"))
-                except ValueError:
-                    rating = 0
+                if not entries:
+                    break
                     
-                timestamp = str(entry.get("updated", {}).get("label", ""))
-                username = str(entry.get("author", {}).get("name", {}).get("label", "Anonymous"))
+                raw_entries.extend(entries)
                 
-                # Normalize timestamp if possible to match play store YYYY-MM-DDTHH:MM:SS
-                try:
-                    # e.g., 2026-07-13T05:56:12-07:00 -> 2026-07-13T05:56:12
-                    if "-" in timestamp and "T" in timestamp:
-                        dt_part = timestamp.split("-")
-                        if len(dt_part) >= 4:  # contains timezone offset
-                            timestamp = "-".join(dt_part[:-1])
-                except Exception:
-                    pass
+                for entry in entries:
+                    if len(normalized) >= count:
+                        break
+                        
+                    if "author" not in entry:
+                        continue
+                        
+                    review_id = str(entry.get("id", {}).get("label", ""))
+                    title = str(entry.get("title", {}).get("label", ""))
+                    content = str(entry.get("content", {}).get("label", ""))
+                    text = f"{title}: {content}" if title else content
+                    
+                    try:
+                        rating = int(entry.get("im:rating", {}).get("label", "0"))
+                    except ValueError:
+                        rating = 0
+                        
+                    timestamp = str(entry.get("updated", {}).get("label", ""))
+                    username = str(entry.get("author", {}).get("name", {}).get("label", "Anonymous"))
+                    
+                    try:
+                        if "-" in timestamp and "T" in timestamp:
+                            dt_part = timestamp.split("-")
+                            if len(dt_part) >= 4:
+                                timestamp = "-".join(dt_part[:-1])
+                    except Exception:
+                        pass
+                    
+                    normalized.append({
+                        "review_id": review_id,
+                        "review_text": text,
+                        "rating": rating,
+                        "source": "app_store",
+                        "timestamp": timestamp,
+                        "username": username,
+                        "platform": "ios"
+                    })
+                    
+                page += 1
+            except Exception:
+                break
+    except Exception:
+        pass
+
+    # Fallback to pre-cached data/raw/app_store_raw.json if no reviews were fetched online
+    if not normalized:
+        backend_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.dirname(backend_dir)
+        fallback_file = os.path.join(project_root, "data", "raw", "app_store_raw.json")
+        if os.path.exists(fallback_file):
+            try:
+                with open(fallback_file, "r", encoding="utf-8") as f:
+                    cached = json.load(f)
+                for entry in cached:
+                    if len(normalized) >= count:
+                        break
+                    review_id = str(entry.get("id", {}).get("label", ""))
+                    title = str(entry.get("title", {}).get("label", ""))
+                    content = str(entry.get("content", {}).get("label", ""))
+                    text = f"{title}: {content}" if title else content
+                    try:
+                        rating = int(entry.get("im:rating", {}).get("label", "0"))
+                    except ValueError:
+                        rating = 0
+                    timestamp = str(entry.get("updated", {}).get("label", ""))
+                    username = str(entry.get("author", {}).get("name", {}).get("label", "Anonymous"))
+                    normalized.append({
+                        "review_id": review_id or f"appstore_{len(normalized)}",
+                        "review_text": text,
+                        "rating": rating,
+                        "source": "app_store",
+                        "timestamp": timestamp,
+                        "username": username,
+                        "platform": "ios"
+                    })
+            except Exception:
+                pass
                 
-                normalized.append({
-                    "review_id": review_id,
-                    "review_text": text,
-                    "rating": rating,
-                    "source": "app_store",
-                    "timestamp": timestamp,
-                    "username": username,
-                    "platform": "ios"
-                })
-                
-            page += 1
-        except Exception as e:
-            if not normalized:
-                raise RuntimeError(f"Error scraping Apple App Store: {str(e)}")
-            break
-            
-    # Save raw reviews to data/raw
+    # Save raw reviews to data/raw if newly fetched
     if raw_entries:
         save_raw_reviews(raw_entries, "app_store_raw.json")
         

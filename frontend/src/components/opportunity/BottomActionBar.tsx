@@ -5,6 +5,7 @@ import { Calendar, Download, Sparkles, Cpu } from "lucide-react";
 
 interface BottomActionBarProps {
   opportunityCount: number;
+  cleanedCount?: number;
   onSchedule?: () => void;
   onExport?: () => void;
   onGeneratePM?: () => void;
@@ -12,6 +13,7 @@ interface BottomActionBarProps {
 
 export default function BottomActionBar({
   opportunityCount,
+  cleanedCount = 100,
   onSchedule,
   onExport,
   onGeneratePM,
@@ -59,7 +61,7 @@ export default function BottomActionBar({
           }}
         />
         <Cpu size={12} />
-        AI engine active: Listening to 14.2k nodes
+        AI engine active: {cleanedCount} reviews analyzed
       </div>
 
       {/* Opportunity count */}

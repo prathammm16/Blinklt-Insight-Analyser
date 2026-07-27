@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState } from "react";
 import Sidebar from "@/components/layout/Sidebar";
 import TopBar from "@/components/layout/TopBar";
 import UploadModal from "@/components/shared/UploadModal";
@@ -9,9 +9,9 @@ import StatCards from "@/components/dashboard/StatCards";
 import ExecutiveSummary from "@/components/dashboard/ExecutiveSummary";
 import SourceDistributionChart from "@/components/dashboard/SourceDistributionChart";
 import SentimentChart from "@/components/dashboard/SentimentChart";
-import { getHistory, getReport } from "@/lib/api";
-import { SEED_ANALYSIS } from "@/lib/seedData";
-import type { AnalysisResult, RunHistoryEntry } from "@/types";
+import { getReport } from "@/lib/api";
+import { useAnalysis } from "@/context/AnalysisContext";
+import type { AnalysisResult } from "@/types";
 import {
   Clock,
   CheckCircle,
@@ -24,12 +24,9 @@ import {
 } from "lucide-react";
 
 export default function DashboardPage() {
+  const { result, history, updateAnalysisResult, isLoading } = useAnalysis();
   const [showUpload, setShowUpload] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
   const [isGenerating, setIsGenerating] = useState(false);
-  // Default to seed data so dashboard is always populated
-  const [result, setResult] = useState<AnalysisResult>(SEED_ANALYSIS);
-  const [history, setHistory] = useState<RunHistoryEntry[]>([]);
   const [reportMd, setReportMd] = useState<string | null>(null);
   const [showReport, setShowReport] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -370,22 +367,9 @@ export default function DashboardPage() {
     }
   };
 
-  const loadHistory = useCallback(async () => {
-    try {
-      const h = await getHistory();
-      setHistory(h);
-    } catch {
-      // silent — backend might not be running
-    }
-  }, []);
-
-  useEffect(() => {
-    loadHistory();
-  }, [loadHistory]);
-
   const handleAnalysisSuccess = (r: AnalysisResult) => {
-    setResult(r);
-    loadHistory();
+    updateAnalysisResult(r);
+    setShowUpload(false);
   };
 
   const handleGenerateReport = async () => {

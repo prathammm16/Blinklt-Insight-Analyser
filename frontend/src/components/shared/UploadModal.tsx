@@ -59,12 +59,18 @@ export default function UploadModal({ onClose, onSuccess }: UploadModalProps) {
       onSuccess(result);
       onClose();
     } catch (err: unknown) {
-      const msg =
+      let rawMsg =
         (err as { response?: { data?: { detail?: string } }; message?: string })
           ?.response?.data?.detail ||
         (err as { message?: string })?.message ||
         "Analysis failed. Please try again.";
-      setError(msg);
+
+      if (rawMsg.includes("timeout") || rawMsg.includes("exceeded")) {
+        rawMsg = "Analysis timed out while processing with Gemini AI. Try reducing the sample count (e.g. 50 reviews) or check your connection.";
+      } else if (rawMsg.includes("Network Error") || rawMsg.includes("ECONNREFUSED")) {
+        rawMsg = "Cannot reach backend server. Please ensure the Python FastAPI backend is running on port 8000.";
+      }
+      setError(rawMsg);
     } finally {
       setIsLoading(false);
     }

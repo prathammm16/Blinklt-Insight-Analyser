@@ -11,7 +11,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 const api = axios.create({
   baseURL: BASE_URL,
-  timeout: 120_000, // 2 minutes for long analysis
+  timeout: 300_000, // 5 minutes for long AI analysis synthesis and review scraping
 });
 
 // ─── Health ──────────────────────────────────────────────────────────────────
@@ -25,6 +25,23 @@ export async function checkHealth(): Promise<HealthResponse> {
 
 export async function getHistory(): Promise<RunHistoryEntry[]> {
   const { data } = await api.get<RunHistoryEntry[]>("/api/history");
+  return data;
+}
+
+// ─── Analysis & Reviews Data ──────────────────────────────────────────────────
+
+export async function getLatestAnalysis(): Promise<AnalysisResult> {
+  const { data } = await api.get<AnalysisResult>("/api/analysis/latest");
+  return data;
+}
+
+export async function getProcessedReviews(): Promise<any[]> {
+  const { data } = await api.get<any[]>("/api/reviews");
+  return data;
+}
+
+export async function getRunDetails(runId: string): Promise<AnalysisResult> {
+  const { data } = await api.get<AnalysisResult>(`/api/run/${runId}`);
   return data;
 }
 

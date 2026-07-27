@@ -38,25 +38,25 @@ const mainNavLinks: NavLinkDef[] = [
     id: "review-explorer",
     label: "Review Explorer",
     icon: <Search size={16} />,
-    href: "/dashboard",
+    href: "/review-explorer",
   },
   {
     id: "ai-discovery",
     label: "AI Discovery",
     icon: <Sparkles size={16} />,
-    href: "/dashboard",
+    href: "/ai-discovery",
   },
   {
     id: "theme-analysis",
     label: "Theme Analysis",
     icon: <TrendingUp size={16} />,
-    href: "/dashboard",
+    href: "/theme-analysis",
   },
   {
     id: "shopping-behaviour",
     label: "Shopping Behaviour",
     icon: <ShoppingCart size={16} />,
-    href: "/dashboard",
+    href: "/shopping-behaviour",
   },
   {
     id: "jtbd",
@@ -68,7 +68,7 @@ const mainNavLinks: NavLinkDef[] = [
     id: "root-cause",
     label: "Root Cause Analysis",
     icon: <GitBranch size={16} />,
-    href: "/dashboard",
+    href: "/root-cause",
   },
   {
     id: "opportunity-finder",
@@ -83,25 +83,33 @@ const workspaceNavLinks: NavLinkDef[] = [
     id: "reports",
     label: "Reports",
     icon: <FileText size={16} />,
-    href: "/dashboard",
+    href: "/reports",
   },
   {
     id: "data-sources",
     label: "Data Sources",
     icon: <Database size={16} />,
-    href: "/dashboard",
+    href: "/data-sources",
   },
   {
     id: "settings",
     label: "Settings",
     icon: <Settings size={16} />,
-    href: "/dashboard",
+    href: "/settings",
   },
 ];
 
 function getActiveItem(pathname: string): NavItem {
+  if (pathname.startsWith("/review-explorer")) return "review-explorer";
+  if (pathname.startsWith("/ai-discovery")) return "ai-discovery";
+  if (pathname.startsWith("/theme-analysis")) return "theme-analysis";
+  if (pathname.startsWith("/shopping-behaviour")) return "shopping-behaviour";
   if (pathname.startsWith("/jtbd")) return "jtbd";
+  if (pathname.startsWith("/root-cause")) return "root-cause";
   if (pathname.startsWith("/opportunity-finder")) return "opportunity-finder";
+  if (pathname.startsWith("/reports")) return "reports";
+  if (pathname.startsWith("/data-sources")) return "data-sources";
+  if (pathname.startsWith("/settings")) return "settings";
   return "dashboard";
 }
 
@@ -240,41 +248,48 @@ export default function Sidebar() {
               gap: 2,
             }}
           >
-            {workspaceNavLinks.map((link) => (
-              <li key={link.id}>
-                <Link
-                  href={link.href}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    gap: 10,
-                    padding: "8px 12px",
-                    borderRadius: 8,
-                    fontSize: 13.5,
-                    fontWeight: 400,
-                    color: "var(--text-secondary)",
-                    background: "transparent",
-                    textDecoration: "none",
-                    transition: "all 0.15s ease",
-                  }}
-                  onMouseEnter={(e) => {
-                    (e.currentTarget as HTMLAnchorElement).style.background =
-                      "var(--bg-main)";
-                    (e.currentTarget as HTMLAnchorElement).style.color =
-                      "var(--text-primary)";
-                  }}
-                  onMouseLeave={(e) => {
-                    (e.currentTarget as HTMLAnchorElement).style.background =
-                      "transparent";
-                    (e.currentTarget as HTMLAnchorElement).style.color =
-                      "var(--text-secondary)";
-                  }}
-                >
-                  <span style={{ opacity: 0.7 }}>{link.icon}</span>
-                  {link.label}
-                </Link>
-              </li>
-            ))}
+            {workspaceNavLinks.map((link) => {
+              const isActive = activeItem === link.id;
+              return (
+                <li key={link.id}>
+                  <Link
+                    href={link.href}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 10,
+                      padding: "8px 12px",
+                      borderRadius: 8,
+                      fontSize: 13.5,
+                      fontWeight: isActive ? 600 : 400,
+                      color: isActive ? "#1C1C1C" : "var(--text-secondary)",
+                      background: isActive ? "var(--gold)" : "transparent",
+                      textDecoration: "none",
+                      transition: "all 0.15s ease",
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isActive) {
+                        (e.currentTarget as HTMLAnchorElement).style.background =
+                          "var(--bg-main)";
+                        (e.currentTarget as HTMLAnchorElement).style.color =
+                          "var(--text-primary)";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isActive) {
+                        (e.currentTarget as HTMLAnchorElement).style.background =
+                          "transparent";
+                        (e.currentTarget as HTMLAnchorElement).style.color =
+                          "var(--text-secondary)";
+                      }
+                    }}
+                  >
+                    <span style={{ opacity: isActive ? 1 : 0.7 }}>{link.icon}</span>
+                    {link.label}
+                  </Link>
+                </li>
+              );
+            })}
           </ul>
         </div>
       </nav>

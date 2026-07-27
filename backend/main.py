@@ -88,6 +88,47 @@ def get_history():
     """
     return load_runs_history()
 
+@app.get("/api/analysis/latest")
+def get_latest_analysis():
+    """
+    Returns the latest processed analysis results JSON.
+    """
+    processed_dir = get_processed_dir()
+    analysis_file = os.path.join(processed_dir, "analysis_results.json")
+    if os.path.exists(analysis_file):
+        try:
+            with open(analysis_file, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception as e:
+            logger.error(f"Error loading analysis_results.json: {e}")
+    history = load_runs_history()
+    if history:
+        latest_run_id = history[0]["run_id"]
+        return load_run_details(latest_run_id)
+    raise HTTPException(status_code=404, detail="No analysis results available.")
+
+@app.get("/api/reviews")
+def get_processed_reviews():
+    """
+    Returns the list of processed & cleaned reviews.
+    """
+    processed_dir = get_processed_dir()
+    reviews_file = os.path.join(processed_dir, "processed_reviews.json")
+    if os.path.exists(reviews_file):
+        try:
+            with open(reviews_file, "r", encoding="utf-8") as f:
+                return json.load(f)
+        except Exception as e:
+            logger.error(f"Error loading processed_reviews.json: {e}")
+    return []
+
+@app.get("/api/run/{run_id}")
+def get_run(run_id: str):
+    """
+    Loads saved analysis run details for a given run ID.
+    """
+    return load_run_details(run_id)
+
 @app.get("/api/report/{run_id}")
 def get_report(run_id: str):
     """

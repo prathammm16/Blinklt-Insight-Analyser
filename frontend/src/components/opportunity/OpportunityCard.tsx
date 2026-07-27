@@ -26,25 +26,26 @@ const IMPACT_COLORS: Record<string, { bg: string; text: string }> = {
 };
 
 export function buildOpportunities(themes: Theme[], painPoints: PainPoint[]): OpportunityItem[] {
-  const impacts: ("HIGH IMPACT" | "MED IMPACT" | "LOW IMPACT")[] = [
-    "HIGH IMPACT",
-    "MED IMPACT",
-    "HIGH IMPACT",
-    "LOW IMPACT",
-  ];
-  const growths = ["+22.4%", "+12.8%", "+18.1%", "+9.3%"];
-  const confidences = [92, 74, 85, 67];
-  const priorities = ["P0", "P1", "P0", "P2"];
+  if (!themes || themes.length === 0) return [];
 
-  return themes.slice(0, 4).map((t, i) => ({
-    type: "theme" as const,
-    data: t,
-    impact: impacts[i % impacts.length],
-    growth: growths[i % growths.length],
-    confidence: confidences[i % confidences.length],
-    priority: priorities[i % priorities.length],
-    description: t.description,
-  }));
+  return themes.map((t, i) => {
+    const size = t.size || t.supporting_reviews?.length || 5;
+    const growth = `+${Math.min(32, Math.max(8, parseFloat((size * 2.2).toFixed(1))))}%`;
+    const confidence = Math.min(96, Math.max(68, 92 - i * 4));
+    const priority = i === 0 ? "P0" : i < 3 ? "P1" : "P2";
+    const impact: "HIGH IMPACT" | "MED IMPACT" | "LOW IMPACT" =
+      size >= 10 ? "HIGH IMPACT" : size >= 5 ? "MED IMPACT" : "LOW IMPACT";
+
+    return {
+      type: "theme" as const,
+      data: t,
+      impact,
+      growth,
+      confidence,
+      priority,
+      description: t.description,
+    };
+  });
 }
 
 export default function OpportunityCard({

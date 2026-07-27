@@ -1,58 +1,43 @@
-import sys
-import os
-import types
-
-# Dynamic package alias registration
-# If 'backend' is not in search path (e.g. running from /backend directly), register the current folder modules as 'backend.*'
-try:
-    import backend.config
-except ModuleNotFoundError:
-    backend_mod = types.ModuleType('backend')
-    sys.modules['backend'] = backend_mod
-    
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    if current_dir not in sys.path:
-        sys.path.insert(0, current_dir)
-        
-    try:
-        import config as config_module
-        sys.modules['backend.config'] = config_module
-        backend_mod.config = config_module
-        
-        import collector as collector_module
-        sys.modules['backend.collector'] = collector_module
-        backend_mod.collector = collector_module
-        
-        import processor as processor_module
-        sys.modules['backend.processor'] = processor_module
-        backend_mod.processor = processor_module
-        
-        import analyzer as analyzer_module
-        sys.modules['backend.analyzer'] = analyzer_module
-        backend_mod.analyzer = analyzer_module
-        
-        import reporter as reporter_module
-        sys.modules['backend.reporter'] = reporter_module
-        backend_mod.reporter = reporter_module
-        
-        import database as database_module
-        sys.modules['backend.database'] = database_module
-        backend_mod.database = database_module
-    except Exception as e:
-        print(f"Failed to bootstrap package layout mapping: {e}", file=sys.stderr)
-
 from fastapi import FastAPI, UploadFile, File, Form, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+import os
 import json
 import datetime
 import uuid
 import logging
-from backend.config import settings
-from backend.collector import scrape_play_store, scrape_app_store, parse_csv_reviews
-from backend.processor import preprocess_reviews
-from backend.analyzer import analyze_reviews, classify_sentiments
-from backend.reporter import compile_markdown_report
+
+# Standardize import mapping to support running either from the repository root or the backend/ folder context
+try:
+    from backend.config import settings
+    from backend.collector import scrape_play_store, scrape_app_store, parse_csv_reviews
+    from backend.processor import preprocess_reviews
+    from backend.analyzer import analyze_reviews, classify_sentiments
+    from backend.reporter import compile_markdown_report
+    from backend.database import (
+        is_db_configured,
+        init_db,
+        db_load_runs_history,
+        db_save_run_entry,
+        db_save_run_details,
+        db_load_run_details,
+        db_load_latest_data
+    )
+except ModuleNotFoundError:
+    from config import settings
+    from collector import scrape_play_store, scrape_app_store, parse_csv_reviews
+    from processor import preprocess_reviews
+    from analyzer import analyze_reviews, classify_sentiments
+    from reporter import compile_markdown_report
+    from database import (
+        is_db_configured,
+        init_db,
+        db_load_runs_history,
+        db_save_run_entry,
+        db_save_run_details,
+        db_load_run_details,
+        db_load_latest_data
+    )
 
 # Configure Logger
 logging.basicConfig(level=logging.INFO)
@@ -80,16 +65,6 @@ def get_processed_dir() -> str:
     processed_dir = os.path.join(project_root, "data", "processed")
     os.makedirs(processed_dir, exist_ok=True)
     return processed_dir
-
-from backend.database import (
-    is_db_configured,
-    init_db,
-    db_load_runs_history,
-    db_save_run_entry,
-    db_save_run_details,
-    db_load_run_details,
-    db_load_latest_data
-)
 
 # Initialize database schema if configured
 try:

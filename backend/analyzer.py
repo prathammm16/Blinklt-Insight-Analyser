@@ -265,7 +265,11 @@ Return your response strictly as a single JSON object.
         with open(save_path, "w", encoding="utf-8") as f:
             json.dump(validated_analysis, f, indent=2, ensure_ascii=False)
             
-        from backend.database import is_db_configured, db_save_latest_data, db_load_latest_data
+        try:
+            from backend.database import is_db_configured, db_save_latest_data
+        except ModuleNotFoundError:
+            from database import is_db_configured, db_save_latest_data
+            
         if is_db_configured():
             db_save_latest_data("analysis_results", validated_analysis)
             logger.info("Successfully saved analysis results to database")
@@ -275,7 +279,11 @@ Return your response strictly as a single JSON object.
         
     except Exception as e:
         logger.error(f"Error during Gemini review analysis: {str(e)}")
-        from backend.database import is_db_configured, db_load_latest_data
+        try:
+            from backend.database import is_db_configured, db_load_latest_data
+        except ModuleNotFoundError:
+            from database import is_db_configured, db_load_latest_data
+            
         if is_db_configured():
             try:
                 latest = db_load_latest_data("analysis_results")

@@ -201,7 +201,11 @@ def preprocess_reviews(reviews_list: list[dict]) -> tuple[list[dict], dict]:
         json.dump(processed_reviews, f, indent=2, ensure_ascii=False)
     logger.info(f"Saved processed reviews to {reviews_save_path}")
     
-    from backend.database import is_db_configured, db_save_latest_data
+    try:
+        from backend.database import is_db_configured, db_save_latest_data
+    except ModuleNotFoundError:
+        from database import is_db_configured, db_save_latest_data
+        
     if is_db_configured():
         db_save_latest_data("processed_reviews", processed_reviews)
         logger.info("Saved processed reviews to database")

@@ -102,6 +102,13 @@ class ScrapeRequest(BaseModel):
     app_id_or_url: str
     count: int = 100
 
+@app.get("/")
+def read_root():
+    return {
+        "status": "healthy",
+        "message": "Blinkit Insight AI API is running. Check health at /api/health"
+    }
+
 @app.get("/api/health")
 def health_check():
     return {
